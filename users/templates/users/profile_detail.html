@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+    <img id='profile-big-pic' class='rounded-circle' src='{{ object.user.profile.profile_pic.url }}'><br><br>
+
+    {% if request.user == object.user %}
+        <b>- my profile</b> - {{ object.user.username }}
+        <a href="{% url 'profile-update' user.profile.slug %}"><small>edit profile</small></a>
+        <br>
+    {% else %}
+        - <b>{{ object.user }}'s</b> profile
+        <br>
+    {% endif %}
+
+    {% if object.user.profile.bio %}
+        <small>{{ object.user.profile.bio }}</small>
+        <br><br>
+    {% endif %}
+
+    {% if object.user.profile.kind %}
+        <p>- {{ object.user.profile.kind }}</p>
+    {% endif %}
+
+    {% if object.user.profile.city %}
+        <p>- based in {{ object.user.profile.city }}</p>
+    {% endif %}
+
+    {% if object.user.profile.open_for_coop %}
+        <p>- Open for cooperation - {{ object.user.profile.get_form_of_coop }}</p>
+    {% else %}
+        <p>- Not open for cooperation at the moment</p>
+    {% endif %}
+
+    {% if object.user.profile.get_instruments %}
+        <p>- Instruments - {{ object.user.profile.get_instruments }}</p>
+    {% endif %}
+
+    {% if object.user.profile.get_generes %}
+        <p>- Generes - {{ object.user.profile.get_generes }}</p>
+    {% endif %}
+
+{% endblock %}

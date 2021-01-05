@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <h1>We're sad to see you go</h1>
+    <a class="text-muted" href="{% url 'login' %}">Log in again!</a>
+{% endblock %}

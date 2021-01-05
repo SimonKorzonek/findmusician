@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit!</button>
+    </form>
+
+    <small class="text-muted">
+        Need account? <a href="{% url 'register' %}">Create one!</a><br>
+    </small>
+
+{% endblock %}

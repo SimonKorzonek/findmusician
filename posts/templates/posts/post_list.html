@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+
+    {% for obj in object_list %}
+        <img id='profile-small-pic' class='rounded-circle' src='{{ obj.author.profile.profile_pic.url }}'><br>
+        <a href="{% url 'post-detail' obj.id obj.slug %}"><b>{{ obj.title }}</b></a> - written by <a href="{% url 'user-detail' obj.author.profile.slug %}">{{ obj.author }}</a> on {{ obj.created }}
+
+        {% if obj.author == request.user %}
+            <a href="{% url 'post-update' obj.id obj.slug %}"><small>edit</small></a>
+            <a href="{% url 'post-delete' obj.id obj.slug %}"><small>delete</small></a>
+        {% endif %}
+        
+        <br><p class='ml-1 mb-1'>{{ obj.text }}</p>
+
+
+        {% if comments %}
+            <p class='ml-1'>{{ obj.number_of_comments }} comment{{ obj.number_of_comments|pluralize }}</p>
+            {% for comment in comments %}
+                {% if comment.post == obj %}
+                    <small class="ml-2"><a href="{% url 'user-detail' comment.author.slug %}"><b> {{ comment.author }} </b></a> on {{ comment.created }}</small>
+                    <small><a href="{% url 'comment-detail' comment.id %}">reply</a></small>
+                    <p class="mb-0 ml-2 pl-1">{{ comment.text }}</p>
+
+                    <!-- REPLIES -->
+                    {% for reply in comment.children %}
+                        <small>
+                            <a class="ml-5" href="{% url 'user-detail' reply.author.slug %}"><b>{{ reply.author }}</b></a> on {{ reply.created }}</small>
+                            <p class="mb-0 ml-5 pl-2 small">{{ reply.text }}</p>
+                        </small>
+                    {% endfor %}<br>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <br>
+    {% endfor %}
+
+    <br><br>
+    {% include "_pagination.html" %}
+{% endblock %}

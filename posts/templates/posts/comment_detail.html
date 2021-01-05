@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <p class="ml-1">Reply to this comment</p>
+
+    <!-- COMMENT -->
+    <a class='ml-2' href="{% url 'user-detail' comment.author.slug %}"><b>{{ comment.author }}</b></a> commented on the<a class="ml-1" href="{% url 'post-detail' post.id post.slug %}">post</a> by <a href="{% url 'user-detail' post.author.profile.slug %}">{{ post.author }}</a>:
+    <p class='ml-3 mb-0'>{{ comment.text }}</p>
+
+
+    <!-- REPLIES -->
+    {% for reply in comment.children %}
+        <small><a class="ml-5" href="{% url 'user-detail' reply.author.slug %}"><b>{{ reply.author }}</b></a> {{ reply.text }}</small><br>
+    {% endfor %}<br>
+
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ comment_reply_form }}
+            <input type="submit" value="Reply">
+        </form>
+    {% else %}
+        <a class="btn btn-outline-info" href="{% url 'login' %}?next={{request.path}}">Log in to add a reply!</a><br>
+    {% endif %}
+
+
+{% endblock %}

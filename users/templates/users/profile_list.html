@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+    {% for obj in object_list %}
+        <img id='profile-small-pic' class='rounded-circle' src='{{ obj.user.profile.profile_pic.url }}'><br>
+        <a href="{% url 'user-detail' obj.slug %}">{{ obj.user.username }}</a>
+
+        {% if obj.user.profile.kind %}
+            - {{ obj.user.profile.kind }}
+        {% endif %}
+
+        {% if obj.user.profile.city %}
+            - {{ obj.user.profile.city }}
+        {% endif %}<br><br>
+
+        {% if obj.user.profile.open_for_coop %}
+            <p>Open for cooperation - {{ obj.user.profile.get_form_of_coop }}.</p>
+        {% else %}
+            <p>Not open for cooperation at the moment.</p>
+        {% endif %}
+
+        {% if obj.user.profile.get_instruments %}
+            <p>Instruments - {{ obj.user.profile.get_instruments }}</p>
+        {% endif %}
+
+        {% if obj.user.profile.get_generes %}
+            <p>Generes - {{ obj.user.profile.get_generes }}</p>
+        {% endif %}
+
+        <p>______________________________________________</p>
+    {% endfor %}
+
+    {% include "_pagination.html" %}
+{% endblock %}

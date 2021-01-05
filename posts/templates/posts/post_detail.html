@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <!-- POST -->
+    <img id='profile-small-pic' class='rounded-circle' src='{{ post.author.profile.profile_pic.url }}'><br>
+    <b>{{ post.title }}</b> - written by <a href="{% url 'user-detail' post.author.profile.slug %}">{{ post.author }}</a> on {{ post.created }}
+
+    {% if post.author == request.user %}
+        <a href="{% url 'post-update' post.id post.slug %}"><small>edit</small></a>
+        <a href="{% url 'post-delete' post.id post.slug %}"><small>delete</small></a>
+    {% endif %}<br>
+
+    <p>{{ post.text }}</p>
+
+
+    <!-- COMMENTS -->
+    {% if comments %}
+        <p class="ml-2">{{ object.number_of_comments }} Comment{{ object.number_of_comments|pluralize }}</p>
+        {% for comment in comments %}
+            {% if comment.post == post %}
+                <small class="ml-2"><a href="{% url 'user-detail' comment.author.slug %}"><b> {{ comment.author }} </b></a> on {{ comment.created }}</small>
+                <small><a href="{% url 'comment-detail' comment.id %}">reply</a></small>
+                <p class="mb-0 ml-2 pl-1">{{ comment.text }}</p>
+   
+                <!-- REPLIES -->
+                {% for reply in comment.children %}
+                    <small>
+                        <a class="ml-5" href="{% url 'user-detail' reply.author.slug %}"><b>{{ reply.author }}</b></a> on {{ reply.created }}</small>
+                        <p class="mb-0 ml-5 pl-2 small">{{ reply.text }}</p>
+                    </small>
+                {% endfor %}<br>
+
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <input type="submit" value="Submit">
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}?next={{request.path}}">Log in to comment</a><br>
+    {% endif %}
+
+
+{% endblock %}
